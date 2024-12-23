@@ -1,0 +1,70 @@
+version: '3'
+services:
+  db:
+    image: postgres:14
+    env_file:
+      - .env
+    networks:
+      - internal-net 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+  
+  redis:
+    image: redis:alpine
+    networks:
+      - internal-net 
+    restart: unless-stopped
+
+  backend:
+    build: ./backend/
+    environment:
+      - PYTHONPATH=/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - shared-tmp:/tmp
+      - ./shared:/app/shared
+    networks:
+      - internal-net 
+    restart: unless-stopped
+
+  celery_worker:
+    build: ./backend
+    command: celery -A celery_worker worker --loglevel=info --concurrency=1 --pool=solo
+    environment:
+      - PYTHONPATH=/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - shared-tmp:/tmp 
+      - ./shared:/app/shared
+    networks:
+      - internal-net 
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - internal-net
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  internal-net:
+
+volumes:
+  shared-tmp:
+  postgres_data:

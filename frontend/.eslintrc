@@ -1,0 +1,6 @@
+{
+  "extends": ["react-app", "react-app/jest"],
+  "rules": {
+    "react/react-in-jsx-scope": "off"  // 關閉 JSX 必須引入 React 的規則
+  }
+}
