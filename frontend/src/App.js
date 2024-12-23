@@ -16,8 +16,8 @@ const App = () => {
   const fetchFiles = async (page = 1) => {
     try {
 	  const response = await axios.get(
-        //`http://127.0.0.1:8000/files/?skip=${(page - 1) * itemsPerPage}&limit=${itemsPerPage}`
-        `http://backend:8000/files/?skip=${(page - 1) * itemsPerPage}&limit=${itemsPerPage}`
+        `http://127.0.0.1:8000/files/?skip=${(page - 1) * itemsPerPage}&limit=${itemsPerPage}`
+        //`http://backend:8000/files/?skip=${(page - 1) * itemsPerPage}&limit=${itemsPerPage}`
       );
       setFiles(response.data);
       setCurrentPage(page);
@@ -37,8 +37,8 @@ const App = () => {
     formData.append("file", file);
 
     try {
-      //const response = await axios.post("http://127.0.0.1:8000/upload/", formData, {
-      const response = await axios.post("http://backend:8000/upload/", formData, {
+      const response = await axios.post("http://127.0.0.1:8000/upload/", formData, {
+      //const response = await axios.post("http://backend:8000/upload/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -76,8 +76,8 @@ const App = () => {
 
     try {
       for (const fileId of selectedFiles) {
-        //await axios.delete(`http://127.0.0.1:8000/delete/${fileId}`);
-        await axios.delete(`http://backend:8000/delete/${fileId}`);
+        await axios.delete(`http://127.0.0.1:8000/delete/${fileId}`);
+        //await axios.delete(`http://backend:8000/delete/${fileId}`);
       }
       fetchFiles();
       setSelectedFiles([]);
@@ -227,7 +227,7 @@ const App = () => {
               <td>
                 {file.status === "Completed" ? (
                   <a
-                    href={`http://backend:8000/parsed_content/${file.id}`}
+                    href={`http://127.0.0.1:8000/parsed_content/${file.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-info btn-sm"

@@ -28,7 +28,7 @@ class FileRecordResponse(BaseModel):
 
     class Config:
         orm_mode = True
-        #from_attributes=True
+        from_attributes=True
 
 # For parsing
 class ParsedContentBase(BaseModel):
