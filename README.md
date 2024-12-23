@@ -19,17 +19,20 @@ The following diagram illustrates the system architecture:
 
 ```mermaid
 graph TD;
-    A[React Frontend] --> B[FastAPI API Backend];
-    B --> C[PostgreSQL Database];
-    B --> D[Redis Queue];
-    D --> E[Celery Worker];
-
-    style A fill:#9cf,stroke:#333,stroke-width:2px;
-    style B fill:#f96,stroke:#333,stroke-width:2px;
-    style C fill:#6c9,stroke:#333,stroke-width:2px;
-    style D fill:#cc9,stroke:#333,stroke-width:2px;
-    style E fill:#c9f,stroke:#333,stroke-width:2px;
+    User -->|Interact| Frontend;
+    Frontend -->|API Request| Backend;
+    Backend -->|Save Metadata| PostgreSQL;
+    Backend -->|Queue Task| Redis;
+    Redis -->|Task Execution| Celery_Worker;
+    Celery_Worker -->|Read/Write| PostgreSQL;
+    Celery_Worker -->|File Processing| File_Storage;
+    Celery_Worker -->|Update Status| PostgreSQL;
+    Frontend -->|Fetch Status| Backend;
+    Backend -->|Query| PostgreSQL;
+    Backend -->|Return Data| Frontend;
+    Frontend -->|Show Status| User;
 ```
+
 # Features
 - **Upload PDF Files**: Users can upload PDF files for processing.
 - **Track Status**: File statuses include Uploading, Parsing, Completed, and Failed.
